@@ -1,195 +1,185 @@
-<p align="center">
-  <img src="assets/logo.jpg" width="200"/>
-</p>
+# OpenManus-GUI
 
-English | [中文](README_zh.md) | [한국어](README_ko.md) | [日本語](README_ja.md)
+基于 [OpenManus](https://github.com/FoundationAgents/OpenManus) 改进的通用浏览器自动化智能体，专注于解决动态网页交互与复杂推理任务。
 
-[![GitHub stars](https://img.shields.io/github/stars/FoundationAgents/OpenManus?style=social)](https://github.com/FoundationAgents/OpenManus/stargazers)
-&ensp;
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT) &ensp;
-[![Discord Follow](https://dcbadge.vercel.app/api/server/DYn29wFk9z?style=flat)](https://discord.gg/DYn29wFk9z)
-[![Demo](https://img.shields.io/badge/Demo-Hugging%20Face-yellow)](https://huggingface.co/spaces/lyh-917/OpenManusDemo)
-[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.15186407.svg)](https://doi.org/10.5281/zenodo.15186407)
+## 项目简介
 
-# 👋 OpenManus
+本项目在 OpenManus 基础上进行了多项优化，增强了其处理复杂网页任务的能力：
 
-Manus is incredible, but OpenManus can achieve any idea without an *Invite Code* 🛫!
+- **GUI 增强交互**：支持图形界面交互，提升用户体验
+- **多模型支持**：集成通义千问（Qwen-Max/VL-Plus）、GPT、Claude 等多种大模型
+- **中文搜索优化**：默认使用百度搜索，优化中文场景下的搜索效果
+- **安全沙箱集成**：集成 Daytona 沙箱环境，保障代码执行安全
+- **反检测机制**：添加浏览器反检测参数，提升自动化成功率
+- **MCP 协议支持**：支持 MCP 协议，可扩展更多工具
 
-Our team members [@Xinbin Liang](https://github.com/mannaandpoem) and [@Jinyu Xiang](https://github.com/XiangJinyu) (core authors), along with [@Zhaoyang Yu](https://github.com/MoshiQAQ), [@Jiayi Zhang](https://github.com/didiforgithub), and [@Sirui Hong](https://github.com/stellaHSR), we are from [@MetaGPT](https://github.com/geekan/MetaGPT). The prototype is launched within 3 hours and we are keeping building!
+## 技术架构
 
-It's a simple implementation, so we welcome any suggestions, contributions, and feedback!
-
-Enjoy your own agent with OpenManus!
-
-We're also excited to introduce [OpenManus-RL](https://github.com/OpenManus/OpenManus-RL), an open-source project dedicated to reinforcement learning (RL)- based (such as GRPO) tuning methods for LLM agents, developed collaboratively by researchers from UIUC and OpenManus.
-
-## Project Demo
-
-<video src="https://private-user-images.githubusercontent.com/61239030/420168772-6dcfd0d2-9142-45d9-b74e-d10aa75073c6.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDEzMTgwNTksIm5iZiI6MTc0MTMxNzc1OSwicGF0aCI6Ii82MTIzOTAzMC80MjAxNjg3NzItNmRjZmQwZDItOTE0Mi00NWQ5LWI3NGUtZDEwYWE3NTA3M2M2Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTAzMDclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwMzA3VDAzMjIzOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdiZjFkNjlmYWNjMmEzOTliM2Y3M2VlYjgyNDRlZDJmOWE3NWZhZjE1MzhiZWY4YmQ3NjdkNTYwYTU5ZDA2MzYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.UuHQCgWYkh0OQq9qsUWqGsUbhG3i9jcZDAMeHjLt5T4" data-canonical-src="https://private-user-images.githubusercontent.com/61239030/420168772-6dcfd0d2-9142-45d9-b74e-d10aa75073c6.mp4?jwt=eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJnaXRodWIuY29tIiwiYXVkIjoicmF3LmdpdGh1YnVzZXJjb250ZW50LmNvbSIsImtleSI6ImtleTUiLCJleHAiOjE3NDEzMTgwNTksIm5iZiI6MTc0MTMxNzc1OSwicGF0aCI6Ii82MTIzOTAzMC80MjAxNjg3NzItNmRjZmQwZDItOTE0Mi00NWQ5LWI3NGUtZDEwYWE3NTA3M2M2Lm1wND9YLUFtei1BbGdvcml0aG09QVdTNC1ITUFDLVNIQTI1NiZYLUFtei1DcmVkZW50aWFsPUFLSUFWQ09EWUxTQTUzUFFLNFpBJTJGMjAyNTAzMDclMkZ1cy1lYXN0LTElMkZzMyUyRmF3czRfcmVxdWVzdCZYLUFtei1EYXRlPTIwMjUwMzA3VDAzMjIzOVomWC1BbXotRXhwaXJlcz0zMDAmWC1BbXotU2lnbmF0dXJlPTdiZjFkNjlmYWNjMmEzOTliM2Y3M2VlYjgyNDRlZDJmOWE3NWZhZjE1MzhiZWY4YmQ3NjdkNTYwYTU5ZDA2MzYmWC1BbXotU2lnbmVkSGVhZGVycz1ob3N0In0.UuHQCgWYkh0OQq9qsUWqGsUbhG3i9jcZDAMeHjLt5T4" controls="controls" muted="muted" class="d-block rounded-bottom-2 border-top width-fit" style="max-height:640px; min-height: 200px"></video>
-
-## Installation
-
-We provide two installation methods. Method 2 (using uv) is recommended for faster installation and better dependency management.
-
-### Method 1: Using conda
-
-1. Create a new conda environment:
-
-```bash
-conda create -n open_manus python=3.12
-conda activate open_manus
+```
+┌─────────────────────────────────────────────────────────┐
+│                    Manus Agent                          │
+│  ┌─────────────┐  ┌─────────────┐  ┌─────────────┐    │
+│  │  Planner    │→ │  Executor   │→ │  Reviewer   │    │
+│  └─────────────┘  └─────────────┘  └─────────────┘    │
+└──────────────────────────┬──────────────────────────────┘
+                           │
+        ┌──────────────────┼──────────────────┐
+        ▼                  ▼                  ▼
+┌───────────────┐  ┌───────────────┐  ┌───────────────┐
+│ Browser Agent │  │ SWE Agent     │  │ Tool Agent    │
+│ (Playwright)  │  │ (代码开发)    │  │ (MCP/搜索)    │
+└───────────────┘  └───────────────┘  └───────────────┘
+        │                                         
+        ▼                                         
+┌───────────────┐                          
+│ Daytona       │ ← 安全沙箱执行 Python 代码
+│ Sandbox       │                          
+└───────────────┘                          
 ```
 
-2. Clone the repository:
+## 核心特性
+
+### 1. ReAct 分层状态机
+- **Planner**：任务规划与拆解
+- **Executor**：执行具体操作
+- **Reviewer**：结果审查与失败重试
+
+### 2. Daytona 安全沙箱
+- 网络隔离与资源限制
+- 防止恶意代码执行
+- 支持 Python 脚本安全运行
+
+### 3. GUI-Plus 元素定位
+- DOM 语义解析 + Vision 感知双通道
+- 元素定位成功率大幅提升
+- 解决动态网页、JS 控件定位难题
+
+### 4. 多模型集成
+- 通义千问（Qwen-Max/VL-Plus）
+- OpenAI GPT-4o
+- Anthropic Claude
+- Google Gemini
+- 支持 function calling
+
+## 安装部署
+
+### 环境要求
+- Python 3.12+
+- Playwright
+- API Key（通义千问/GPT/Claude 等）
+
+### 安装步骤
 
 ```bash
-git clone https://github.com/FoundationAgents/OpenManus.git
-cd OpenManus
-```
+# 1. 克隆项目
+git clone https://github.com/Ding-god/OpenManus-gui.git
+cd OpenManus-gui
 
-3. Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-### Method 2: Using uv (Recommended)
-
-1. Install uv (A fast Python package installer and resolver):
-
-```bash
-curl -LsSf https://astral.sh/uv/install.sh | sh
-```
-
-2. Clone the repository:
-
-```bash
-git clone https://github.com/FoundationAgents/OpenManus.git
-cd OpenManus
-```
-
-3. Create a new virtual environment and activate it:
-
-```bash
+# 2. 创建虚拟环境
 uv venv --python 3.12
-source .venv/bin/activate  # On Unix/macOS
-# Or on Windows:
-# .venv\Scripts\activate
-```
+source .venv/bin/activate  # Linux/macOS
+# .venv\Scripts\activate   # Windows
 
-4. Install dependencies:
-
-```bash
+# 3. 安装依赖
 uv pip install -r requirements.txt
-```
 
-### Browser Automation Tool (Optional)
-```bash
+# 4. 安装浏览器
 playwright install
-```
 
-## Configuration
-
-OpenManus requires configuration for the LLM APIs it uses. Follow these steps to set up your configuration:
-
-1. Create a `config.toml` file in the `config` directory (you can copy from the example):
-
-```bash
+# 5. 配置 API Key
 cp config/config.example.toml config/config.toml
+# 编辑 config/config.toml 添加你的 API Key
 ```
 
-2. Edit `config/config.toml` to add your API keys and customize settings:
+### 配置说明
+
+编辑 `config/config.toml`：
 
 ```toml
-# Global LLM configuration
 [llm]
-model = "gpt-4o"
-base_url = "https://api.openai.com/v1"
-api_key = "sk-..."  # Replace with your actual API key
-max_tokens = 4096
-temperature = 0.0
+api_type = "openai"
+model = "qwen-max"
+base_url = "https://dashscope.aliyuncs.com/compatible-mode/v1"
+api_key = "your-dashscope-api-key"
 
-# Optional configuration for specific LLM models
 [llm.vision]
-model = "gpt-4o"
-base_url = "https://api.openai.com/v1"
-api_key = "sk-..."  # Replace with your actual API key
+model = "qwen-vl-plus"
+
+[search]
+engine = "baidu"
+lang = "zh"
+country = "cn"
+
+[daytona]
+daytona_api_key = "your-daytona-api-key"
 ```
 
-## Quick Start
+## 使用方法
 
-One line for run OpenManus:
+### 命令行交互
 
 ```bash
 python main.py
 ```
 
-Then input your idea via terminal!
+### MCP 工具版本
 
-For MCP tool version, you can run:
 ```bash
 python run_mcp.py
 ```
 
-For unstable multi-agent version, you also can run:
+### 多 Agent 版本
 
 ```bash
 python run_flow.py
 ```
 
-### Custom Adding Multiple Agents
+## 项目结构
 
-Currently, besides the general OpenManus Agent, we have also integrated the DataAnalysis Agent, which is suitable for data analysis and data visualization tasks. You can add this agent to `run_flow` in `config.toml`.
-
-```toml
-# Optional configuration for run-flow
-[runflow]
-use_data_analysis_agent = true     # Disabled by default, change to true to activate
 ```
-In addition, you need to install the relevant dependencies to ensure the agent runs properly: [Detailed Installation Guide](app/tool/chart_visualization/README.md##Installation)
-
-## How to contribute
-
-We welcome any friendly suggestions and helpful contributions! Just create issues or submit pull requests.
-
-Or contact @mannaandpoem via 📧email: mannaandpoem@gmail.com
-
-**Note**: Before submitting a pull request, please use the pre-commit tool to check your changes. Run `pre-commit run --all-files` to execute the checks.
-
-## Community Group
-Join our networking group on Feishu and share your experience with other developers!
-
-<div align="center" style="display: flex; gap: 20px;">
-    <img src="assets/community_group.jpg" alt="OpenManus 交流群" width="300" />
-</div>
-
-## Star History
-
-[![Star History Chart](https://api.star-history.com/svg?repos=FoundationAgents/OpenManus&type=Date)](https://star-history.com/#FoundationAgents/OpenManus&Date)
-
-## Sponsors
-Thanks to [PPIO](https://ppinfra.com/user/register?invited_by=OCPKCN&utm_source=github_openmanus&utm_medium=github_readme&utm_campaign=link) for computing source support.
-> PPIO: The most affordable and easily-integrated MaaS and GPU cloud solution.
-
-
-## Acknowledgement
-
-Thanks to [anthropic-computer-use](https://github.com/anthropics/anthropic-quickstarts/tree/main/computer-use-demo), [browser-use](https://github.com/browser-use/browser-use) and [crawl4ai](https://github.com/unclecode/crawl4ai) for providing basic support for this project!
-
-Additionally, we are grateful to [AAAJ](https://github.com/metauto-ai/agent-as-a-judge), [MetaGPT](https://github.com/geekan/MetaGPT), [OpenHands](https://github.com/All-Hands-AI/OpenHands) and [SWE-agent](https://github.com/SWE-agent/SWE-agent).
-
-We also thank stepfun(阶跃星辰) for supporting our Hugging Face demo space.
-
-OpenManus is built by contributors from MetaGPT. Huge thanks to this agent community!
-
-## Cite
-```bibtex
-@misc{openmanus2025,
-  author = {Xinbin Liang and Jinyu Xiang and Zhaoyang Yu and Jiayi Zhang and Sirui Hong and Sheng Fan and Xiao Tang and Bang Liu and Yuyu Luo and Chenglin Wu},
-  title = {OpenManus: An open-source framework for building general AI agents},
-  year = {2025},
-  publisher = {Zenodo},
-  doi = {10.5281/zenodo.15186407},
-  url = {https://doi.org/10.5281/zenodo.15186407},
-}
+OpenManus-gui/
+├── app/
+│   ├── agent/           # Agent 实现
+│   │   ├── browser.py   # 浏览器自动化 Agent
+│   │   ├── manus.py     # 主 Agent
+│   │   ├── mcp.py       # MCP 协议支持
+│   │   └── react.py     # ReAct 模式
+│   ├── tool/            # 工具集
+│   │   ├── browser_use_tool.py
+│   │   ├── search/      # 搜索工具
+│   │   └── sandbox/    # 沙箱工具
+│   └── sandbox/         # Daytona 沙箱
+├── config/              # 配置文件
+├── examples/           # 使用示例
+├── static/             # 静态资源
+├── templates/          # HTML 模板
+└── logs/               # 运行日志
 ```
+
+## 技术栈
+
+- **语言**: Python
+- **LLM**: 通义千问、GPT-4o、Claude、Gemini
+- **浏览器**: Playwright
+- **框架**: LangChain、ReAct
+- **沙箱**: Daytona
+- **搜索**: 百度、Google、DuckDuckGo
+
+## 应用场景
+
+- 机票/酒店预订自动化
+- 跨平台价格比价
+- 竞品分析数据采集
+- 表单自动填写
+- 网页内容监控
+- 自动化测试
+
+## 注意事项
+
+1. 请遵守目标网站的服务条款
+2. 敏感操作建议在沙箱环境中运行
+3. 部分网站可能有反爬机制，需合理设置请求间隔
+
+## License
+
+MIT License
